@@ -3,7 +3,14 @@
     font-family: 'Martian Mono', monospace;
     font-weight: 400 !important;
 }
+body{
+    background-color: #e2e2e2;
+}
 
+.flex{
+    display: flex;
+    flex-direction: row;
+}
 
 .fixTableHead {
     overflow-y: auto;
@@ -91,6 +98,26 @@
 }
 
 
+.descuento_cont{
+    padding: 20px 0px 20px 0px;
+}
+.descuento_input{
+    width: 50%;
+    padding-right: 10px;
+}
+.descuento_button{
+    width: 50%;
+}
+.input-descuento{
+    border: solid 1px rgba(0, 0, 0, 0.6);
+}
+.descuento_button{
+    font-size: 14px;
+    width: 100%;
+}
+
+
+
 .td_boton_añadir{
     
 }
@@ -102,6 +129,22 @@
 .inputut-descuento{
     border: solid 1px #030303 !important;
 }
+
+
+
+.venta_fecha{
+    font-weight: 700 !important;
+    font-size: 15px;
+    letter-spacing: -1px;
+}
+.ventas-body{
+    margin: 5px;
+    padding: 5px;
+    border:solid 1px rgba(0, 0, 0, 0.6);
+}
+
+
+
 
 /* 
 

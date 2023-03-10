@@ -81,7 +81,7 @@ class ExcelPrinter{
                 <td class="medida">${row.marca()}</td>
                 <td class="medida">${row.codigo()}</td>
                 <td class="precio">$ ${row.precio()}</td>
-                <td class="d-flex justify-content-center td_boton_añadir">
+                <td class="d-flex justify-content-center td_boton_añadir ">
                     <button type="button" class="btn btn-success boton_añadir" id="add" onclick="add_button(${index})">+</button>
                 </td>
             </tr>
@@ -240,6 +240,9 @@ saveButton.addEventListener("click", function() {
   generateFile(table, filename);
 });
 
+
+
+
 function generateFile(table, filename) {
     // Crear hoja de cálculo
     const worksheet = XLSX.utils.aoa_to_sheet([
@@ -274,3 +277,91 @@ function generateFile(table, filename) {
     // Guardar archivo
     XLSX.writeFile(workbook, `${filename}.xlsx`);
   }
+
+
+
+
+  document.getElementById('save-button').addEventListener('click', saveAsExcel);
+  function saveAsExcel() {
+    const worksheet = XLSX.utils.table_to_sheet(document.getElementById('selected-table'));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Productos');
+    XLSX.writeFile(workbook, 'tabla-productos.xlsx');
+  }
+
+
+
+  
+  var tablaContainer = document.getElementById("table-container");
+
+  function guardarTabla() {
+    // Crear objeto de venta con la fecha actual
+    var venta = {
+        fecha: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        tabla: document.getElementById("table-total").innerHTML,
+    };
+  
+    // Obtener ventas guardadas del local storage
+    var ventasGuardadas = JSON.parse(localStorage.getItem("ventas")) || [];
+  
+    // Agregar nueva venta al arreglo de ventas guardadas
+    ventasGuardadas.push(venta);
+  
+    // Guardar arreglo de ventas en el local storage
+    localStorage.setItem("ventas", JSON.stringify(ventasGuardadas));
+  }
+
+  
+  function eliminarVenta(index) {
+    // Obtener ventas guardadas del local storage
+    var ventasGuardadas = JSON.parse(localStorage.getItem("ventas")) || [];
+  
+    // Eliminar la venta en la posición indicada del arreglo de ventas guardadas
+    ventasGuardadas.splice(index, 1);
+  
+    // Guardar arreglo de ventas en el local storage
+    localStorage.setItem("ventas", JSON.stringify(ventasGuardadas));
+  
+    // Actualizar la tabla del modal
+    mostrarVentasGuardadas();
+  }
+  
+  
+  function mostrarVentasGuardadas() {
+    var ventasGuardadas = JSON.parse(localStorage.getItem("ventas")) || [];
+  
+    // Crear HTML para mostrar las ventas guardadas
+    var modalBodyHTML = "";
+    for (var i = 0; i < ventasGuardadas.length; i++) {
+      var venta = ventasGuardadas[i];
+      var fecha = venta.fecha;
+      var tablaGuardada = venta.tabla;
+  
+      // Eliminar la cuarta columna de la tabla guardada
+      var tablaSinColumna = tablaGuardada.replace(/<td class="eliminar-item">[^<]+<\/td>/g, "");
+  
+      // Agregar el botón de eliminar venta y el HTML correspondiente a la tabla guardada
+      modalBodyHTML +=
+        '<div class="ventas-body">' +
+        '<p class="venta_fecha">Venta registrada el ' +
+        fecha +
+        "</p>" +
+        tablaSinColumna +
+        "<button class='btn btn-danger' onclick=\"eliminarVenta(" +
+        i +
+        ")\">Eliminar venta</button>" +
+        "</div>";
+    }
+  
+    // Mostrar HTML en el modal
+    var modalBody = document.getElementById("modal-body");
+    if (modalBody) {
+      modalBody.innerHTML = modalBodyHTML;
+    }
+  }
+  
+  document.getElementById("open-modal").addEventListener("click", function () {
+    mostrarVentasGuardadas();
+  });
+
+    
