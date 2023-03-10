@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100;400;700&display=swap');
+*{
+    font-family: 'Martian Mono', monospace;
+    font-weight: 400 !important;
+}
+
+
+.fixTableHead {
+    overflow-y: auto;
+    height: 80vh ;
+  }
+  .fixTableHead thead {
+    position: sticky !important;
+    top: 0;
+  }
+  table {
+    border-collapse: collapse;        
+  }
+
+
+
+.input_icon{
+    background-color: #4a32c4 ;
+    color: #fff !important;
+}
+.input-search .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 400;
+}
+.buscador{
+    font-weight: 700 !important;
+    background-color: #ffb026 !important;
+}
+
+
+.tabla_general{
+    font-size: 14px;
+}
+.tabla_header{
+    height: 50px;
+    color: #7ab8ff !important;
+    font-weight: 700 !important;
+    border-collapse: collapse;
+}
+
+
+
+.nombre{
+    font-weight: 700 !important;
+}
+.medida{
+    font-weight: 100 !important;
+}
+.precio{
+    font-weight: 700 !important;
+    text-align: center;
+    color: #46d46c !important;
+
+}
+
+
+
+#table-total{
+    border: solid 1px #9a9a9a;
+    border-radius: 0px 0px 10px 10px;
+}
+.tabla_header_total{
+    background-color: #4a32c4 !important;
+    height: 50px;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border-collapse: collapse;
+    border-radius: 10px !important;
+}
+
+.table_precio_total{
+    background-color: #46d46c !important;
+    font-weight: 700 !important;
+    font-size: 18px;
+}
+
+
+.table-total-nombre{
+    font-weight: 400 !important;
+    font-size: 14px;
+    letter-spacing: -2px;
+}
+.table-total-precio{
+    text-align: center;
+    font-weight: 700 !important;
+}
+
+
+.td_boton_añadir{
+    
+}
+.boton_añadir{
+    background-color: #44b662 !important;
+}
+
+
+.inputut-descuento{
+    border: solid 1px #030303 !important;
+}
+
+/* 
+
+MORADO
+#4a32c4 
+
+NARANJA
+#ffb026
+
+
+.table-hover tbody tr:hover td {
+    background: aqua;
+}
+
+*/
