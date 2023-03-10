@@ -223,71 +223,16 @@ function updateTotal(discount = 0) {
 
 }
 
-const btnDescuento = document.getElementById('btn-descuento');
-btnDescuento.addEventListener('click', function() {
-const discount = parseFloat(document.querySelector('.input-descuento').value);
-updateTotal(discount);
-});
-
-
-
-
-
-const saveButton = document.getElementById("save-button");
-saveButton.addEventListener("click", function() {
-  const table = document.getElementById("table-total");
-  const filename = "Tabla Total";
-  generateFile(table, filename);
-});
-
-
-
-
-function generateFile(table, filename) {
-    // Crear hoja de cálculo
-    const worksheet = XLSX.utils.aoa_to_sheet([
-      ["producto", "precio", "cantidad", "total", "fecha", "hora"]
-    ]);
-    let total = 0;
-    // Agregar datos a las celdas
-    for (let i = 1; i < table.rows.length; i++) {
-      const row = table.rows[i];
-      const producto = row.cells[0].textContent;
-      const precio = row.cells[1].textContent;
-      const cantidad = row.cells[2].textContent;
-      const subtotal = row.cells[3].textContent;
-      total += parseFloat(subtotal.replace("$", ""));
-      const fecha = new Date().toLocaleDateString();
-      const hora = new Date().toLocaleTimeString();
-      XLSX.utils.sheet_add_aoa(worksheet, [
-        [producto, precio, cantidad, subtotal, fecha, hora]
-      ], {
-        origin: -1
-      });
-    }
-    // Agregar la fila de totales
-    XLSX.utils.sheet_add_aoa(worksheet, [
-      ["Total", "", "", "$" + total.toFixed(2), "", ""]
-    ], {
-      origin: -1
+    const btnDescuento = document.getElementById('btn-descuento');
+    btnDescuento.addEventListener('click', function() {
+    const discount = parseFloat(document.querySelector('.input-descuento').value);
+    updateTotal(discount);
     });
-    // Crear libro de trabajo y agregar hoja de cálculo
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Tabla Total");
-    // Guardar archivo
-    XLSX.writeFile(workbook, `${filename}.xlsx`);
-  }
 
 
 
 
-  document.getElementById('save-button').addEventListener('click', saveAsExcel);
-  function saveAsExcel() {
-    const worksheet = XLSX.utils.table_to_sheet(document.getElementById('selected-table'));
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Productos');
-    XLSX.writeFile(workbook, 'tabla-productos.xlsx');
-  }
+
 
 
 
@@ -338,7 +283,10 @@ function generateFile(table, filename) {
       var tablaGuardada = venta.tabla;
   
       // Eliminar la cuarta columna de la tabla guardada
-      var tablaSinColumna = tablaGuardada.replace(/<td class="eliminar-item">[^<]+<\/td>/g, "");
+      var tablaSinColumna = "";
+if (typeof tablaGuardada === "string") {
+  tablaSinColumna = tablaGuardada.replace(/<td class="eliminar-item">[^<]+<\/td>/g, "");
+}
   
       // Agregar el botón de eliminar venta y el HTML correspondiente a la tabla guardada
       modalBodyHTML +=
@@ -364,4 +312,98 @@ function generateFile(table, filename) {
     mostrarVentasGuardadas();
   });
 
-    
+
+
+
+
+
+
+
+  function generateExcel() {
+    // Obtener los datos almacenados en el localStorage
+    const savedTables = Object.keys(localStorage).map(key => JSON.parse(localStorage.getItem(key)));
+    // Crear un archivo de Excel
+    const workbook = XLSX.utils.book_new();
+    savedTables.forEach((table, index) => {
+      // Crear una hoja de cálculo para cada tabla guardada
+      const worksheet = XLSX.utils.aoa_to_sheet(table.data);
+      // Agregar los encabezados
+      XLSX.utils.sheet_add_aoa(worksheet, table.headers, { origin: "A1" });
+      // Agregar la fecha y la hora
+      XLSX.utils.sheet_add_aoa(worksheet, [["Fecha", table.date], ["Hora", table.time]], { origin: `A${table.data.length + 2}` });
+      // Agregar el total
+      XLSX.utils.sheet_add_aoa(worksheet, [["Total", table.total]], { origin: `A${table.data.length + 3}` });
+      // Agregar la hoja de cálculo al archivo de Excel
+      XLSX.utils.book_append_sheet(workbook, worksheet, `Tabla ${index + 1}`);
+    });
+    // Guardar el archivo de Excel
+    XLSX.writeFile(workbook, "tablas.xlsx");
+  }
+
+
+
+
+
+
+
+
+
+
+/*
+
+  const saveButton = document.getElementById("save-button");
+    saveButton.addEventListener("click", function() {
+    const table = document.getElementById("table-total");
+    const filename = "Tabla Total";
+    generateFile(table, filename);
+    });
+
+
+
+function generateFile(table, filename) {
+    // Crear hoja de cálculo
+    const worksheet = XLSX.utils.aoa_to_sheet([
+      ["producto", "precio", "cantidad", "total", "fecha", "hora"]
+    ]);
+    let total = 0;
+    // Agregar datos a las celdas
+    for (let i = 1; i < table.rows.length; i++) {
+      const row = table.rows[i];
+      const producto = row.cells[0].textContent;
+      const precio = row.cells[1].textContent;
+      const cantidad = row.cells[2].textContent;
+      const subtotal = row.cells[3].textContent;
+      total += parseFloat(subtotal.replace("$", ""));
+      const fecha = new Date().toLocaleDateString();
+      const hora = new Date().toLocaleTimeString();
+      XLSX.utils.sheet_add_aoa(worksheet, [
+        [producto, precio, cantidad, subtotal, fecha, hora]
+      ], {
+        origin: -1
+      });
+    }
+    // Agregar la fila de totales
+    XLSX.utils.sheet_add_aoa(worksheet, [
+      ["Total", "", "", "$" + total.toFixed(2), "", ""]
+    ], {
+      origin: -1
+    });
+    // Crear libro de trabajo y agregar hoja de cálculo
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Tabla Total");
+    // Guardar archivo
+    XLSX.writeFile(workbook, `${filename}.xlsx`);
+  }
+
+
+
+
+  document.getElementById('save-button').addEventListener('click', saveAsExcel);
+  function saveAsExcel() {
+    const worksheet = XLSX.utils.table_to_sheet(document.getElementById('selected-table'));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Productos');
+    XLSX.writeFile(workbook, 'tabla-productos.xlsx');
+  }
+
+    */
