@@ -131,7 +131,7 @@ function searcher() {
 
 
 
-  function add_button(indice){
+function add_button(indice){
     const row = document.querySelectorAll(`#excel-table tbody tr:nth-child(${indice+1}) td`);
     const rowData = [];
     console.log(rowData)
@@ -180,6 +180,7 @@ function searcher() {
         removeButton.textContent = "-";
         removeButton.type = "button";
         removeButton.classList.add("btn", "btn-danger");
+        
         removeButton.onclick = function() {
             const currentQuantity = parseInt(quantityCell.textContent);
             if (currentQuantity > 1) {
@@ -193,10 +194,24 @@ function searcher() {
         const removeCell = newRow.insertCell();
         removeCell.appendChild(removeButton);
     }
-    
     updateTotal();
 }
 
+function eliminarTabla() {
+    const table = document.getElementById('selected-table');
+
+    // Eliminar todas las filas del tbody excepto la última
+    const tbody = table.querySelector('tbody');
+    let lastRow = tbody.lastElementChild;
+    while (tbody.childNodes.length > 1) {
+        tbody.removeChild(tbody.firstChild);
+    }
+
+    // Agregar la última fila nuevamente al final del tbody
+    tbody.appendChild(lastRow);
+
+    updateTotal();
+}
 
 
 function updateTotal(discount = 0) {
@@ -230,6 +245,8 @@ function updateTotal(discount = 0) {
     //console.log(tableTotal)
 
 }
+
+    updateTotal()
 
 
     const btnDescuento = document.getElementById('btn-descuento');
@@ -280,6 +297,8 @@ function updateTotal(discount = 0) {
   
     // Guardar arreglo de ventas en el local storage
     localStorage.setItem("ventas", JSON.stringify(ventasGuardadas));
+
+    eliminarTabla()
 }
 
   
@@ -325,7 +344,7 @@ function updateTotal(discount = 0) {
         "</div>";
     }
 
-    console.log(ventasGuardadas)
+    //console.log(ventasGuardadas)
   
     // Mostrar HTML en el modal
     var modalBody = document.getElementById("modal-body");

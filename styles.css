@@ -41,7 +41,7 @@ body{
 
 
 .tabla_general{
-    font-size: 14px;
+    font-size: 14px !important;
 }
 .tabla_header{
     height: 50px;
@@ -65,6 +65,37 @@ body{
 
 }
 
+.td_producto{
+    width: 200px;
+}
+.td_precio{
+    width: 100px;
+}
+.td_cant{
+    width: 20px;
+}
+.td_btn{
+    width: 46px;
+}
+
+.btn_eliminar_tabla{
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+    border: 2px solid #dc3545;
+    background-color: #fff;
+
+    font-weight: 700 !important;
+    text-align: center;
+    color:#dc3545;
+
+    transition: 0.3s;
+}
+.btn_eliminar_tabla:hover{
+    box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.2);
+    transform:scale(1.2);
+}
 
 
 #table-total{

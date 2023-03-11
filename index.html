@@ -38,7 +38,7 @@
                 </svg>
             </span>
 
-            <input onkeyup="searcher()" type="text" class="form-control buscador p-4 text-light dark" id="excel-searcher" name="buscador" placeholder="Buscador...">
+            <input onkeyup="searcher()" type="text" class="form-control buscador p-3 text-light dark" id="excel-searcher" name="buscador" placeholder="Buscador...">
         </div>
 
 
@@ -60,15 +60,20 @@
 
 
             <div class="col-4" >
+
                 <div class="table-responsive">
                 <div id="table-total">
-                    <table class="table table-bordered table-hover table-sm table align-middle tabla_general" id="selected-table">
+                    <table class="table table-bordered table-hover table-sm table tabla_general" id="selected-table">
                         <thead class="tabla_header_total">
                             <tr class="align-middle">
                                 <td>Producto</td>
                                 <td>Precio</td>
                                 <td>Cant</td>
-                                <td></td>
+                                <td class="td_btn">
+                                    <button type="button" id="eliminar-tabla" class=" btn_eliminar_tabla" onclick="eliminarTabla()">
+                                    x
+                                    </button>
+                                </td>
                             </tr>
                         </thead>
                         <tbody class="align-middle">
@@ -78,7 +83,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered table-striped" id="selected-table-total">
+                    <table class="table table-bordered" id="selected-table-total">
                         <thead class="bg-primary">
                             <tr>
                             </tr>
@@ -104,13 +109,15 @@
                 
 
                     <div class="d-grid gap-2">
-                    <button type="button" id="guardar-venta" class="btn btn-success" onclick="guardarTabla()">
-                        Guardar venta
-                    </button>
+                        
+                        <button type="button" id="guardar-venta" class="btn btn-success" onclick="guardarTabla()">
+                            Guardar venta
+                        </button>
 
-                    <button type="button" id="open-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-                        Ver ventas del día
-                    </button>
+                        <button type="button" id="open-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+                            Ver ventas del día
+                        </button>
+
                     </div>
 
 
@@ -136,7 +143,7 @@
                 <div id="modal-body">
                   
                     <div class="ventas-body" id="table-total-dia" >
-                        <table class="table table-bordered table-hover table-sm table align-middle tabla_general" id="selected-table">
+                        <table class="table table-bordered table-hover table-sm table align-middle tabla_general" >
                             <thead class="tabla_header_total">
                                 <tr class="align-middle">
                                     <td>Producto</td>
@@ -149,7 +156,7 @@
                             </tbody>
                         </table>
     
-                        <table class="table table-bordered table-striped" id="selected-table-total">
+                        <table class="table table-bordered table-striped" >
                             <thead class="bg-primary">
                                 <tr></tr>
                             </thead>
