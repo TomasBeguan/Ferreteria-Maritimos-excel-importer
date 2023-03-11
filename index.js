@@ -93,8 +93,9 @@ class ExcelPrinter{
 }
 
 
-const excelInput = document.getElementById('excel-input')
 
+// Espera que el input de archivo tenga el archivo
+const excelInput = document.getElementById('excel-input')
 excelInput.addEventListener('change', async function(){
     const content = await readXlsxFile( excelInput.files[0] )
     
@@ -133,13 +134,14 @@ function searcher() {
   function add_button(indice){
     const row = document.querySelectorAll(`#excel-table tbody tr:nth-child(${indice+1}) td`);
     const rowData = [];
+    console.log(rowData)
     row.forEach((cell) => {
         rowData.push(cell.textContent);
     });
     
     const table = document.getElementById('selected-table');
     const productName = rowData[0] + " " + rowData[1];
-    //productName = productName + " " + rowData[1]
+    //convierte el precio ($ 245) a Float (245)
     const productPrice = parseFloat(rowData[4].replace(/[^0-9.-]+/g,""));
     let rowExists = false;
     let quantityCell;
@@ -161,12 +163,15 @@ function searcher() {
     } else {
         // If no row exists for the product, create a new row with the quantity
         const newRow = table.insertRow(table.rows.length - 1);
+        
         const productCell = newRow.insertCell();
         productCell.textContent = productName;
         productCell.classList.add("table-total-nombre");
+
         const priceCell = newRow.insertCell();
         priceCell.textContent = productPrice.toFixed(2);
         priceCell.classList.add("table-total-precio");
+        
         const quantityCell = newRow.insertCell();
         quantityCell.classList.add("table-total-precio");
         quantityCell.textContent = "1";
@@ -221,7 +226,11 @@ function updateTotal(discount = 0) {
     totalRow = tableTotal.rows[tableTotal.rows.length - 1]; // Update the reference to the last row
     totalRow.cells[1].textContent = total.toFixed(2);
 
+    //console.log(table)
+    //console.log(tableTotal)
+
 }
+
 
     const btnDescuento = document.getElementById('btn-descuento');
     btnDescuento.addEventListener('click', function() {
@@ -236,16 +245,33 @@ function updateTotal(discount = 0) {
 
 
 
-  
-  var tablaContainer = document.getElementById("table-container");
+  // GUARDAR TABLA //
 
   function guardarTabla() {
     // Crear objeto de venta con la fecha actual
     var venta = {
-        fecha: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-        tabla: document.getElementById("table-total").innerHTML,
+        fecha: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}),
+        tabla: [],
+        tablaHTML: document.getElementById("table-total").innerHTML,
     };
-  
+    
+    // Obtener la tabla con el id "table-total"
+    var tabla = document.getElementById("table-total");
+    var filas = tabla.getElementsByTagName("tr");
+
+    // Recorrer las filas de la tabla y guardar los datos en el arreglo "tabla" del objeto de venta
+    for (var i = 0; i < filas.length; i++) {
+        var celdas = filas[i].getElementsByTagName("td");
+        var fila = [];
+        for (var j = 0; j < celdas.length; j++) {
+            fila.push(celdas[j].textContent.trim());
+        }
+        venta.tabla.push(fila);
+    }
+
+    //console.log(venta)
+
     // Obtener ventas guardadas del local storage
     var ventasGuardadas = JSON.parse(localStorage.getItem("ventas")) || [];
   
@@ -254,7 +280,7 @@ function updateTotal(discount = 0) {
   
     // Guardar arreglo de ventas en el local storage
     localStorage.setItem("ventas", JSON.stringify(ventasGuardadas));
-  }
+}
 
   
   function eliminarVenta(index) {
@@ -270,6 +296,11 @@ function updateTotal(discount = 0) {
     // Actualizar la tabla del modal
     mostrarVentasGuardadas();
   }
+
+
+
+
+
   
   
   function mostrarVentasGuardadas() {
@@ -280,26 +311,21 @@ function updateTotal(discount = 0) {
     for (var i = 0; i < ventasGuardadas.length; i++) {
       var venta = ventasGuardadas[i];
       var fecha = venta.fecha;
+      var hora = venta.hora;
       var tablaGuardada = venta.tabla;
-  
-      // Eliminar la cuarta columna de la tabla guardada
-      var tablaSinColumna = "";
-if (typeof tablaGuardada === "string") {
-  tablaSinColumna = tablaGuardada.replace(/<td class="eliminar-item">[^<]+<\/td>/g, "");
-}
+      var tablaHTML = venta.tablaHTML;
   
       // Agregar el botón de eliminar venta y el HTML correspondiente a la tabla guardada
       modalBodyHTML +=
         '<div class="ventas-body">' +
-        '<p class="venta_fecha">Venta registrada el ' +
-        fecha +
-        "</p>" +
-        tablaSinColumna +
-        "<button class='btn btn-danger' onclick=\"eliminarVenta(" +
-        i +
-        ")\">Eliminar venta</button>" +
+        '<p class="venta_fecha">Fecha: ' + fecha +"</p>" +
+        '<p class="venta_fecha">Hora: ' + hora +"</p>" +
+        tablaHTML +
+        "<button class='btn btn-danger' onclick=\"eliminarVenta(" + i + ")\">Eliminar venta</button>" +
         "</div>";
     }
+
+    console.log(ventasGuardadas)
   
     // Mostrar HTML en el modal
     var modalBody = document.getElementById("modal-body");
@@ -317,93 +343,58 @@ if (typeof tablaGuardada === "string") {
 
 
 
-
-
   function generateExcel() {
     // Obtener los datos almacenados en el localStorage
-    const savedTables = Object.keys(localStorage).map(key => JSON.parse(localStorage.getItem(key)));
+    var ventasGuardadas = JSON.parse(localStorage.getItem("ventas")) || [];
+    console.log(ventasGuardadas)
+
+    //Funcion hora
+    const horaActual = getHoraActual();
+    const fechaActual = getFechaActual();
+    
     // Crear un archivo de Excel
     const workbook = XLSX.utils.book_new();
-    savedTables.forEach((table, index) => {
-      // Crear una hoja de cálculo para cada tabla guardada
-      const worksheet = XLSX.utils.aoa_to_sheet(table.data);
-      // Agregar los encabezados
-      XLSX.utils.sheet_add_aoa(worksheet, table.headers, { origin: "A1" });
-      // Agregar la fecha y la hora
-      XLSX.utils.sheet_add_aoa(worksheet, [["Fecha", table.date], ["Hora", table.time]], { origin: `A${table.data.length + 2}` });
-      // Agregar el total
-      XLSX.utils.sheet_add_aoa(worksheet, [["Total", table.total]], { origin: `A${table.data.length + 3}` });
+    
+    // Recorrer cada elemento de ventasGuardadas y crear una hoja de cálculo para cada uno
+    for (let i = 0; i < ventasGuardadas.length; i++) {
+      var venta = ventasGuardadas[i];
+      var fecha = venta.fecha;
+      var hora = venta.hora;
+
+      
+      // Crear una hoja de cálculo para los datos de esta venta
+      const worksheet = XLSX.utils.json_to_sheet([venta]);
+      
+      // Definir los encabezados de las columnas
+      XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[0]], {origin: 'A1'});
+
+      for (let j = 0; j < venta.tabla.length; j++) {
+        XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[j]], {origin: 'A'+(j+1)});
+      }
       // Agregar la hoja de cálculo al archivo de Excel
-      XLSX.utils.book_append_sheet(workbook, worksheet, `Tabla ${index + 1}`);
-    });
-    // Guardar el archivo de Excel
-    XLSX.writeFile(workbook, "tablas.xlsx");
-  }
-
-
-
-
-
-
-
-
-
-
-/*
-
-  const saveButton = document.getElementById("save-button");
-    saveButton.addEventListener("click", function() {
-    const table = document.getElementById("table-total");
-    const filename = "Tabla Total";
-    generateFile(table, filename);
-    });
-
-
-
-function generateFile(table, filename) {
-    // Crear hoja de cálculo
-    const worksheet = XLSX.utils.aoa_to_sheet([
-      ["producto", "precio", "cantidad", "total", "fecha", "hora"]
-    ]);
-    let total = 0;
-    // Agregar datos a las celdas
-    for (let i = 1; i < table.rows.length; i++) {
-      const row = table.rows[i];
-      const producto = row.cells[0].textContent;
-      const precio = row.cells[1].textContent;
-      const cantidad = row.cells[2].textContent;
-      const subtotal = row.cells[3].textContent;
-      total += parseFloat(subtotal.replace("$", ""));
-      const fecha = new Date().toLocaleDateString();
-      const hora = new Date().toLocaleTimeString();
-      XLSX.utils.sheet_add_aoa(worksheet, [
-        [producto, precio, cantidad, subtotal, fecha, hora]
-      ], {
-        origin: -1
-      });
+      XLSX.utils.book_append_sheet(workbook, worksheet, `Venta ${i+1}`);
     }
-    // Agregar la fila de totales
-    XLSX.utils.sheet_add_aoa(worksheet, [
-      ["Total", "", "", "$" + total.toFixed(2), "", ""]
-    ], {
-      origin: -1
-    });
-    // Crear libro de trabajo y agregar hoja de cálculo
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Tabla Total");
-    // Guardar archivo
-    XLSX.writeFile(workbook, `${filename}.xlsx`);
+    
+    // Guardar el archivo de Excel
+    XLSX.writeFile(workbook, `ventas_${fechaActual}.xlsx`);
   }
 
 
 
-
-  document.getElementById('save-button').addEventListener('click', saveAsExcel);
-  function saveAsExcel() {
-    const worksheet = XLSX.utils.table_to_sheet(document.getElementById('selected-table'));
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Productos');
-    XLSX.writeFile(workbook, 'tabla-productos.xlsx');
+  function getHoraActual() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const formattedTime = `${hours}-${minutes}`;
+    return formattedTime;
+  }
+  function getFechaActual() {
+    const today = new Date();
+    const day = today.getDate().toString().padStart(2, '0');
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const year = today.getFullYear();
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
   }
 
-    */
+
