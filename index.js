@@ -366,11 +366,17 @@ function updateTotal(discount = 0) {
       const worksheet = XLSX.utils.json_to_sheet([venta]);
       
       // Definir los encabezados de las columnas
-      XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[0]], {origin: 'A1'});
+      XLSX.utils.sheet_add_aoa(worksheet, [["Fecha: ", fecha,"",""]], {origin: 'A1'});
+      XLSX.utils.sheet_add_aoa(worksheet, [["Hora: ", hora,"",""]], {origin: 'A2'});
+      XLSX.utils.sheet_add_aoa(worksheet, [["","","",""]], {origin: 'A3'});
+      XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[0]], {origin: 'A4'});
 
-      for (let j = 0; j < venta.tabla.length; j++) {
-        XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[j]], {origin: 'A'+(j+1)});
-      }
+
+        for (let j = 0; j < venta.tabla.length; j++) {
+          XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[j]], {origin: 'A'+(j+4)});
+        }
+
+
       // Agregar la hoja de cálculo al archivo de Excel
       XLSX.utils.book_append_sheet(workbook, worksheet, `Venta ${i+1}`);
     }
