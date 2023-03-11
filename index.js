@@ -67,12 +67,15 @@ class ExcelPrinter{
 
         const table = document.getElementById(tableId)
 
+         // Agrega los encabezados de la tabla
         excel.header().forEach( title => {
             table.querySelector("thead>tr").innerHTML += `<td>${title}</td>`
         })
 
+        // Agrega las filas de la tabla
         for (let index = 0; index < excel.rows().count(); index++) {
             const row = excel.rows().get(index);
+            console.log()
 
             table.querySelector('tbody').innerHTML += `
             <tr>
@@ -86,6 +89,7 @@ class ExcelPrinter{
                 </td>
             </tr>
             `
+
             
         }
         
@@ -97,13 +101,20 @@ class ExcelPrinter{
 // Espera que el input de archivo tenga el archivo
 const excelInput = document.getElementById('excel-input')
 excelInput.addEventListener('change', async function(){
-    const content = await readXlsxFile( excelInput.files[0] )
-    
-    const excel = new Excel(content, 3) // 3 columnas para omitir
-    
-    console.log(ExcelPrinter.print('excel-table', excel))
-    //console.log(excel.rows().get(1).producto())
+    const file = excelInput.files[0];
+    const reader = new FileReader();
 
+    reader.onload = function(event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const content = XLSX.utils.sheet_to_json(sheet, {header: 1});
+        //Ignora las 3 primeras
+        const excel = new Excel(content, 3);
+        console.log(ExcelPrinter.print('excel-table', excel));
+    }
+
+    reader.readAsArrayBuffer(file);
 })
 
 
