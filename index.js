@@ -142,6 +142,72 @@ function searcher() {
 
 
 
+function addInput(){
+    const inputProducto = document.getElementById("input_producto")
+    const inputPrecio = document.getElementById("input_precio")
+    const inputCantidad = document.getElementById("input_cantidad")
+
+    const producto = inputProducto.value;
+    const precio = parseFloat(inputPrecio.value);
+    const cantidad = parseFloat(inputCantidad.value);
+
+    const table = document.getElementById('selected-table');
+
+    let rowExists = false;
+    let quantityCell = cantidad;
+
+    for (let i = 1; i < table.rows.length - 1; i++) {
+        const row = table.rows[i];
+        if (row.cells[0].textContent === producto) {
+            rowExists = true;
+            quantityCell = row.cells[2];
+            break;
+        }
+    }
+
+    if (rowExists) {
+        // If a row exists for the product, add the quantity to the quantity cell
+        const currentQuantity = parseInt(quantityCell.textContent);
+        quantityCell.textContent = cantidad;
+    } else {
+        // If no row exists for the product, create a new row with the quantity
+        const newRow = table.insertRow(table.rows.length - 1);
+        
+        const productCell = newRow.insertCell();
+        productCell.textContent = producto;
+        productCell.classList.add("table-total-nombre");
+
+        const priceCell = newRow.insertCell();
+        priceCell.textContent = precio.toFixed(2);
+        priceCell.classList.add("table-total-precio");
+        
+        const quantityCell = newRow.insertCell();
+        quantityCell.classList.add("table-total-precio");
+        quantityCell.textContent = cantidad;
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "-";
+        removeButton.type = "button";
+        removeButton.classList.add("btn", "btn-danger");
+        
+        removeButton.onclick = function() {
+            const currentQuantity = parseInt(quantityCell.textContent);
+            if (currentQuantity > 1) {
+                quantityCell.textContent = currentQuantity - 1;
+            } else {
+                table.deleteRow(newRow.rowIndex);
+            }
+            updateTotal();
+        };
+
+        const removeCell = newRow.insertCell();
+        removeCell.appendChild(removeButton);
+    }
+    updateTotal();
+    
+}
+
+
 function add_button(indice){
     const row = document.querySelectorAll(`#excel-table tbody tr:nth-child(${indice+1}) td`);
     const rowData = [];
@@ -233,7 +299,7 @@ function updateTotal(discount = 0) {
     for (let i = 1; i < table.rows.length - 1; i++) {
         const row = table.rows[i];
         const price = parseFloat(row.cells[1].textContent);
-        const quantity = parseInt(row.cells[2].textContent);
+        const quantity = row.cells[2].textContent;
         total += price * quantity;
     }
     

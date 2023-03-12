@@ -14,7 +14,7 @@ body{
 
 .fixTableHead {
     overflow-y: auto;
-    height: 80vh ;
+    height: 73vh ;
   }
   .fixTableHead thead {
     position: sticky !important;
@@ -50,6 +50,23 @@ body{
     border-collapse: collapse;
 }
 
+
+.tabla_inputs{
+    margin-top:5px;
+}
+td .form-control::placeholder {
+    color: rgba(0, 0, 0, 0.2);
+    font-weight: 400;
+}
+.input_producto_td{
+
+}
+.input_precio_td{
+    max-width: 100px !important;
+}
+.input_cantidad_td{
+    max-width: 70px !important;
+}
 
 
 .nombre{
