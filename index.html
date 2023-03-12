@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     
+    <link rel="icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="styles.css">
-    <title>Ferreteria</title>
+    <title>Manager Ferreteria Maritimos</title>
 </head>
 <body>
     
@@ -19,17 +20,13 @@
             <div class="col-12 col-md-4">
                 <input type="file" class="form-control form-control-sm dark" data-bs-theme="dark" id="excel-input">
             </div>
-        </div>
-
-
-        <!--
-            <div class="row mb-4">
-            <div class="col-12 col-md-4">
-                <input type="file" class="form-control" id="file-input">
+            <div class="col-md-8 titulo_cont">
+                <img class="logo" src = "assets/Isologo.svg" alt="My Happy SVG"/>
+                <span class="titulo_ferreteria">Ferreteria Maritimos</span>
             </div>
         </div>
-        -->
 
+    
 
         <div class="input-group input-group-lg input-search">
             
@@ -46,7 +43,7 @@
         <div class="row">
             <div class="col-8">
                 <div class="table-responsive fixTableHead">
-                    <table class="table table-bordered table-striped table-dark table-hover table-sm table align-middle tabla_general" id="excel-table">
+                    <table class="table table-bordered table-striped table-dark table-hover table-lg table align-middle tabla_general" id="excel-table">
                         <thead class="bg-primary tabla_header">
                             <tr class="align-middle">
 
@@ -65,7 +62,7 @@
                             <td class="input_producto_td"><input class="form-control" type="text" placeholder="Producto" id="input_producto"></td>
                             <td class="input_precio_td"><input class="form-control" type="number" placeholder="Precio" id="input_precio"></td>
                             <td class="input_cantidad_td"><input class="form-control" type="number" placeholder="Cant" id="input_cantidad"></td>
-                            <td class="d-flex justify-content-center td_boton_añadir"><button type="button" id="eliminar-tabla" class="btn btn-success boton_añadir" onclick="addInput()">+</button></td>
+                            <td class="d-flex justify-content-center td_boton_añadir"><button type="button" id="eliminar-tabla" class="btn boton_añadir" onclick="addInput()">+</button></td>
                         </tr>
                     </thead>
                 </table>
@@ -157,11 +154,11 @@
        <!-- The Modal -->
         <div class="modal" id="myModal">
             <div class="modal-dialog">
-              <div class="modal-content">
+              <div class="modal-content modal_cont">
             
                 <!-- Modal Header -->
                 <div class="modal-header">
-                  <h4 class="modal-title">Ventas del día</h4>
+                  <h4 class="modal-title modal_title">Ventas del día</h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
             

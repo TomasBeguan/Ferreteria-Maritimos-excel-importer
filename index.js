@@ -71,6 +71,7 @@ class ExcelPrinter{
         excel.header().forEach( title => {
             table.querySelector("thead>tr").innerHTML += `<td>${title}</td>`
         })
+        table.querySelector("thead>tr").innerHTML += `<td></td>`
 
         // Agrega las filas de la tabla
         for (let index = 0; index < excel.rows().count(); index++) {
@@ -85,7 +86,7 @@ class ExcelPrinter{
                 <td class="medida">${row.codigo()}</td>
                 <td class="precio">$ ${row.precio()}</td>
                 <td class="d-flex justify-content-center td_boton_añadir ">
-                    <button type="button" class="btn btn-success boton_añadir" id="add" onclick="add_button(${index})">+</button>
+                    <button type="button" class="btn boton_añadir" id="add" onclick="add_button(${index})">+</button>
                 </td>
             </tr>
             `
@@ -456,7 +457,7 @@ function updateTotal(valor = 0, tipo) {
         '<h3 class="venta_fecha">Hora: ' + hora +"</h3>" +
         '<h4 class="venta_comentarios">Comentarios: ' + comentarios +"</h4>" +
         tablaHTML +
-        "<button class='btn btn-danger' onclick=\"eliminarVenta(" + i + ")\">Eliminar venta</button>" +
+        "<button class='btn btn-danger mt-2 shake-button' onclick=\"eliminarVenta(" + i + ")\">Eliminar venta</button>" +
         "</div>";
     }
 

@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap');
+
 *{
-    font-family: 'Martian Mono', monospace;
+    /* 
+    font-family: 'Martian Mono', monospace; 
+    font-family: 'Roboto', sans-serif;
+    */
+    font-family: 'Poppins', sans-serif;
     font-weight: 400 !important;
 }
 body{
@@ -12,16 +19,37 @@ body{
     flex-direction: row;
 }
 
+
+.titulo_cont{
+    margin-left: auto;
+}
+.titulo_ferreteria{
+    font-size: 20px;
+    font-weight: 700 !important;
+    color: #212529;
+    float: right;
+}
+.logo{
+    width: 40px;
+    margin-left: 10px;
+    float: right;
+}
+
+
 .fixTableHead {
     overflow-y: auto;
     height: 73vh ;
   }
-  .fixTableHead thead {
+  .fixTableHead table thead {
     position: sticky !important;
     top: 0;
   }
   table {
     border-collapse: collapse;        
+  }
+
+  .table{
+    margin-bottom: 0px !important;
   }
 
 
@@ -36,7 +64,7 @@ body{
 }
 .buscador{
     font-weight: 700 !important;
-    background-color: #ffb026 !important;
+    background-color: #212529 !important;
 }
 
 
@@ -45,9 +73,13 @@ body{
 }
 .tabla_header{
     height: 50px;
-    color: #7ab8ff !important;
+    color: #715dd5 !important;
     font-weight: 700 !important;
-    border-collapse: collapse;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+}
+.tabla_header tr td{
+    font-weight: 700 !important;
+    font-size: 16px;
 }
 
 
@@ -73,12 +105,12 @@ td .form-control::placeholder {
     font-weight: 700 !important;
 }
 .medida{
-    font-weight: 100 !important;
+    font-weight: 400 !important;
 }
 .precio{
     font-weight: 700 !important;
     text-align: center;
-    color: #46d46c !important;
+    color: #9cc432 !important;
 
 }
 
@@ -117,7 +149,6 @@ td .form-control::placeholder {
 
 #table-total{
     border: solid 1px #9a9a9a;
-    border-radius: 0px 0px 10px 10px;
 }
 .tabla_header_total{
     background-color: #4a32c4 !important;
@@ -129,16 +160,19 @@ td .form-control::placeholder {
 }
 
 .table_precio_total{
-    background-color: #46d46c !important;
+    background-color: #32c470 !important;
+}
+.table_precio_total tr td{
     font-weight: 700 !important;
     font-size: 18px;
+    color: #fff;
 }
 
 
 .table-total-nombre{
     font-weight: 400 !important;
     font-size: 14px;
-    letter-spacing: -2px;
+    letter-spacing: -1px;
 }
 .table-total-precio{
     text-align: center;
@@ -163,11 +197,19 @@ td .form-control::placeholder {
 
 
 
-.td_boton_añadir{
-    
-}
 .boton_añadir{
-    background-color: #44b662 !important;
+    background-color: #9cc432 !important;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.8);
+    color: #fff;
+    font-weight: 400 !important;
+    transition: 0.1s;
+}
+.boton_añadir:hover{
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.8);
+    transform: scale(1.05);
+    background-color: #b5d55d !important;
 }
 
 
@@ -182,12 +224,15 @@ td .form-control::placeholder {
 
 
 #guardar-venta{
-    transition: 0.3s;
+    transition: 0.2s;
+    background-color: #32c470;
+    border: solid 1px #fff;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
 }
 #guardar-venta:hover{
-    box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2);
     transform:scale(1.1);
-    border: solid 3px #fff;
+
 }
 
 .button-waiting {
@@ -211,10 +256,18 @@ td .form-control::placeholder {
 }
 .ventas-body{
     margin: 5px;
-    padding: 5px;
+    padding: 10px;
     border:solid 1px rgba(0, 0, 0, 0.6);
+    background-color: #fff;
 }
 
+.modal_cont{
+    background-color: #111315;
+}
+.modal_title{
+    color: #fff;
+    font-weight: 700;
+}
 
 
 
@@ -232,3 +285,25 @@ NARANJA
 }
 
 */
+
+
+.shake-button {
+    transition: 0.5s;
+  }
+  
+  .shake-button:hover {
+    animation: rotate 0.3s ease-in-out infinite;
+
+  }
+  
+  @keyframes rotate {
+    0% {
+      transform: rotate(3deg);
+    }
+    50% {
+      transform: rotate(-3deg);
+    }
+    100% {
+      transform: rotate(3deg);
+    }
+  }
