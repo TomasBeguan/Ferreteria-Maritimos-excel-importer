@@ -291,7 +291,7 @@ function eliminarTabla() {
 }
 
 
-function updateTotal(discount = 0) {
+function updateTotal(valor = 0, tipo) {
     const table = document.getElementById('selected-table');
     const tableTotal = document.getElementById('selected-table-total');
     let total = 0;
@@ -303,9 +303,20 @@ function updateTotal(discount = 0) {
         total += price * quantity;
     }
     
-    if (discount > 0) {
-        total *= (1 - discount/100); // apply discount
+    if (tipo == "descuento"){
+        if (valor > 0) {
+            console.log("descuento aplicado")
+            total *= (1 - valor/100); // apply discount
+        }
     }
+
+    if (tipo == "recargo"){
+        if (valor > 0) {
+            console.log("recargo aplicado")
+            total *= (1 + valor/100); // apply surcharge
+        }
+    }
+
     
     let totalRow = tableTotal.rows[tableTotal.rows.length - 1];
     if (totalRow.cells.length < 2) {
@@ -328,8 +339,16 @@ function updateTotal(discount = 0) {
 
     const btnDescuento = document.getElementById('btn-descuento');
     btnDescuento.addEventListener('click', function() {
-    const discount = parseFloat(document.querySelector('.input-descuento').value);
-    updateTotal(discount);
+    const tipo = "descuento"
+    const valor = parseFloat(document.querySelector('.input-descuento').value);
+    updateTotal(valor, tipo);
+    });
+
+    const btnRecargo = document.getElementById('btn-recargo');
+    btnRecargo.addEventListener('click', function() {
+        const tipo = "recargo"
+        const valor = parseFloat(document.querySelector('.input-descuento').value);
+        updateTotal(valor, tipo);
     });
 
 
@@ -342,10 +361,25 @@ function updateTotal(discount = 0) {
   // GUARDAR TABLA //
 
   function guardarTabla() {
-    // Crear objeto de venta con la fecha actual
+
+    //animacion carga
+    const button = document.getElementById('guardar-venta');
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.innerHTML  = 'Guardando...';
+    button.classList.add('button-waiting');
+    setTimeout(function() {
+      button.disabled = false;
+      button.innerHTML  = originalText + '<i class="fas fa-arrow-alt-circle-up"></i>';
+      button.classList.remove('button-waiting');
+    }, 1000);
+
+
+    // Crear objeto de venta con los datos actuales
     var venta = {
         fecha: new Date().toLocaleDateString(),
         hora: new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}),
+        comentarios: document.getElementById('input-comentarios').value,
         tabla: [],
         tablaHTML: document.getElementById("table-total").innerHTML,
     };
@@ -375,7 +409,10 @@ function updateTotal(discount = 0) {
     // Guardar arreglo de ventas en el local storage
     localStorage.setItem("ventas", JSON.stringify(ventasGuardadas));
 
+    var inputComentarios = document.getElementById('input-comentarios');
+    inputComentarios.value = ''
     eliminarTabla()
+
 }
 
   
@@ -408,14 +445,16 @@ function updateTotal(discount = 0) {
       var venta = ventasGuardadas[i];
       var fecha = venta.fecha;
       var hora = venta.hora;
+      var comentarios = venta.comentarios;
       var tablaGuardada = venta.tabla;
       var tablaHTML = venta.tablaHTML;
   
       // Agregar el botón de eliminar venta y el HTML correspondiente a la tabla guardada
       modalBodyHTML +=
         '<div class="ventas-body">' +
-        '<p class="venta_fecha">Fecha: ' + fecha +"</p>" +
-        '<p class="venta_fecha">Hora: ' + hora +"</p>" +
+        '<h3 class="venta_fecha">Fecha: ' + fecha +"</h3>" +
+        '<h3 class="venta_fecha">Hora: ' + hora +"</h3>" +
+        '<h4 class="venta_comentarios">Comentarios: ' + comentarios +"</h4>" +
         tablaHTML +
         "<button class='btn btn-danger' onclick=\"eliminarVenta(" + i + ")\">Eliminar venta</button>" +
         "</div>";
@@ -456,22 +495,26 @@ function updateTotal(discount = 0) {
       var venta = ventasGuardadas[i];
       var fecha = venta.fecha;
       var hora = venta.hora;
+      var comentarios = venta.comentarios;
 
-      
+      // Eliminar los datos de venta.tablaHTML
+      venta.tablaHTML = '';
+      venta.tablaHTML.value = "";
+
       // Crear una hoja de cálculo para los datos de esta venta
       const worksheet = XLSX.utils.json_to_sheet([venta]);
-      
+
       // Definir los encabezados de las columnas
       XLSX.utils.sheet_add_aoa(worksheet, [["Fecha: ", fecha,"",""]], {origin: 'A1'});
       XLSX.utils.sheet_add_aoa(worksheet, [["Hora: ", hora,"",""]], {origin: 'A2'});
-      XLSX.utils.sheet_add_aoa(worksheet, [["","","",""]], {origin: 'A3'});
-      XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[0]], {origin: 'A4'});
+      XLSX.utils.sheet_add_aoa(worksheet, [["Comentarios: ", comentarios,"",""]], {origin: 'A3'});
+      XLSX.utils.sheet_add_aoa(worksheet, [["","","",""]], {origin: 'A4'});
 
+      // Crear una nueva matriz que contenga solo las dos primeras columnas de cada fila de venta.tabla
+      const tablaReducida = venta.tabla.map(row => row.slice(0, 3));
 
-        for (let j = 0; j < venta.tabla.length; j++) {
-          XLSX.utils.sheet_add_aoa(worksheet, [venta.tabla[j]], {origin: 'A'+(j+4)});
-        }
-
+      // Agregar la nueva matriz como filas a la hoja de cálculo
+      XLSX.utils.sheet_add_aoa(worksheet, tablaReducida, {origin: 'A5'});
 
       // Agregar la hoja de cálculo al archivo de Excel
       XLSX.utils.book_append_sheet(workbook, worksheet, `Venta ${i+1}`);
@@ -480,7 +523,6 @@ function updateTotal(discount = 0) {
     // Guardar el archivo de Excel
     XLSX.writeFile(workbook, `ventas_${fechaActual}.xlsx`);
   }
-
 
 
   function getHoraActual() {
