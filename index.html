@@ -41,7 +41,7 @@
 
 
         <div class="row">
-            <div class="col-8">
+            <div class="col-7">
                 <div class="table-responsive fixTableHead">
                     <table class="table table-bordered table-striped table-dark table-hover table-lg table align-middle tabla_general" id="excel-table">
                         <thead class="bg-primary tabla_header">
@@ -59,10 +59,11 @@
                 <table class="table table-bordered table-striped table-dark table-hover table-lg table align-middle tabla_inputs">
                     <thead>
                         <tr class="align-middle">
+                            <td class="limpiar_input"><button class="btn_eliminar_tabla" onclick="limpiar_input()">x</button></td>
                             <td class="input_producto_td"><input class="form-control" type="text" placeholder="Producto" id="input_producto"></td>
                             <td class="input_precio_td"><input class="form-control" type="number" placeholder="Precio" id="input_precio"></td>
                             <td class="input_cantidad_td"><input class="form-control" type="number" placeholder="Cant" id="input_cantidad"></td>
-                            <td class="d-flex justify-content-center td_boton_añadir"><button type="button" id="eliminar-tabla" class="btn boton_añadir" onclick="addInput()">+</button></td>
+                            <td class="justify-content-center td_boton_añadir"><button type="button" id="eliminar-tabla" class="btn boton_añadir" onclick="addInput()">+</button></td>
                         </tr>
                     </thead>
                 </table>
@@ -71,7 +72,7 @@
             </div>
 
 
-            <div class="col-4" >
+            <div class="col-5" >
 
                 <div class="table-responsive-derecha">
                 <div id="table-total">
@@ -81,6 +82,8 @@
                                 <td>Producto</td>
                                 <td>Precio</td>
                                 <td>Cant</td>
+                                <td>Subtotal</td>
+
                                 <td class="td_btn">
                                     <button type="button" id="eliminar-tabla" class=" btn_eliminar_tabla" onclick="eliminarTabla()">
                                     x
@@ -120,8 +123,8 @@
                             <input type="text" class="form-control input-descuento" placeholder="%">
                           </div>
                         <div class="flex">
-                            <button type="button" class="btn btn-warning descuento_button" id="btn-descuento">Aplicar descuento %</button>
-                            <button type="button" class="btn btn-danger descuento_button" id="btn-recargo">Aplicar recargo %</button>
+                            <button type="button" class="btn btn-warning descuento_button" id="btn-descuento">Aplicar DESCUENTO</button>
+                            <button type="button" class="btn btn-danger descuento_button" id="btn-recargo">Aplicar RECARGO</button>
                         </div>
                     </div>
 
@@ -172,6 +175,7 @@
                                     <td>Producto</td>
                                     <td>Precio</td>
                                     <td>Cant</td>
+                                    <td>Subtotal</td>
                                 </tr>
                             </thead>
                             <tbody class="align-middle">

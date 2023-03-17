@@ -85,7 +85,7 @@ class ExcelPrinter{
                 <td class="medida">${row.marca()}</td>
                 <td class="medida">${row.codigo()}</td>
                 <td class="precio">$ ${row.precio()}</td>
-                <td class="d-flex justify-content-center td_boton_añadir ">
+                <td class="justify-content-center td_boton_añadir ">
                     <button type="button" class="btn boton_añadir" id="add" onclick="add_button(${index})">+</button>
                 </td>
             </tr>
@@ -156,20 +156,25 @@ function addInput(){
 
     let rowExists = false;
     let quantityCell = cantidad;
+    let subtotal = precio * quantityCell;
 
     for (let i = 1; i < table.rows.length - 1; i++) {
         const row = table.rows[i];
         if (row.cells[0].textContent === producto) {
             rowExists = true;
             quantityCell = row.cells[2];
+            quantityCell.textContent = cantidad; // actualiza la cantidad en la celda correspondiente
+            subtotal = precio * parseFloat(quantityCell.textContent);
+            row.cells[3].textContent = subtotal.toFixed(2);
             break;
         }
     }
 
     if (rowExists) {
         // If a row exists for the product, add the quantity to the quantity cell
-        const currentQuantity = parseInt(quantityCell.textContent);
+        //const currentQuantity = parseInt(quantityCell.textContent);
         quantityCell.textContent = cantidad;
+        table.rows[table.rows.length - 2].cells[3].textContent = subtotal.toFixed(2);
     } else {
         // If no row exists for the product, create a new row with the quantity
         const newRow = table.insertRow(table.rows.length - 1);
@@ -186,6 +191,10 @@ function addInput(){
         quantityCell.classList.add("table-total-precio");
         quantityCell.textContent = cantidad;
 
+        const subtotalCell = newRow.insertCell();
+        subtotalCell.classList.add("table-total-precio", "subtotal-cell");
+        subtotalCell.textContent = subtotal.toFixed(2);
+
         const removeButton = document.createElement("button");
         removeButton.textContent = "-";
         removeButton.type = "button";
@@ -195,6 +204,8 @@ function addInput(){
             const currentQuantity = parseInt(quantityCell.textContent);
             if (currentQuantity > 1) {
                 quantityCell.textContent = currentQuantity - 1;
+                subtotal = precio * parseInt(quantityCell.textContent);
+                subtotalCell.textContent = subtotal.toFixed(2);
             } else {
                 table.deleteRow(newRow.rowIndex);
             }
@@ -204,42 +215,53 @@ function addInput(){
         const removeCell = newRow.insertCell();
         removeCell.appendChild(removeButton);
     }
+
     updateTotal();
     
+}
+
+function limpiar_input(){
+    let producto = document.getElementById("input_producto")
+    let precio = document.getElementById("input_precio")
+    let cantidad = document.getElementById("input_cantidad")
+
+    producto.value = ''
+    precio.value = ''
+    cantidad.value = ''
 }
 
 
 function add_button(indice){
     const row = document.querySelectorAll(`#excel-table tbody tr:nth-child(${indice+1}) td`);
     const rowData = [];
-    console.log(rowData)
     row.forEach((cell) => {
         rowData.push(cell.textContent);
     });
     
     const table = document.getElementById('selected-table');
     const productName = rowData[0] + " " + rowData[1];
-    //convierte el precio ($ 245) a Float (245)
     const productPrice = parseFloat(rowData[4].replace(/[^0-9.-]+/g,""));
     let rowExists = false;
-    let quantityCell;
-    
-    // Search if a row already exists for the product
+    let quantityCell = 1;
+    let subtotal = productPrice * quantityCell;
+
     for (let i = 1; i < table.rows.length - 1; i++) {
         const row = table.rows[i];
         if (row.cells[0].textContent === productName) {
             rowExists = true;
             quantityCell = row.cells[2];
+            subtotal = productPrice * parseInt(quantityCell.textContent);
+            row.cells[3].textContent = subtotal.toFixed(2);
             break;
         }
     }
     
     if (rowExists) {
-        // If a row exists for the product, add the quantity to the quantity cell
         const currentQuantity = parseInt(quantityCell.textContent);
         quantityCell.textContent = currentQuantity + 1;
+        subtotal = productPrice * (currentQuantity + 1);
+        table.rows[table.rows.length - 2].cells[3].textContent = subtotal.toFixed(2);
     } else {
-        // If no row exists for the product, create a new row with the quantity
         const newRow = table.insertRow(table.rows.length - 1);
         
         const productCell = newRow.insertCell();
@@ -250,9 +272,13 @@ function add_button(indice){
         priceCell.textContent = productPrice.toFixed(2);
         priceCell.classList.add("table-total-precio");
         
-        const quantityCell = newRow.insertCell();
+        quantityCell = newRow.insertCell();
         quantityCell.classList.add("table-total-precio");
         quantityCell.textContent = "1";
+
+        const subtotalCell = newRow.insertCell();
+        subtotalCell.classList.add("table-total-precio", "subtotal-cell");
+        subtotalCell.textContent = subtotal.toFixed(2);
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "-";
@@ -263,6 +289,8 @@ function add_button(indice){
             const currentQuantity = parseInt(quantityCell.textContent);
             if (currentQuantity > 1) {
                 quantityCell.textContent = currentQuantity - 1;
+                subtotal = productPrice * parseInt(quantityCell.textContent);
+                subtotalCell.textContent = subtotal.toFixed(2);
             } else {
                 table.deleteRow(newRow.rowIndex);
             }
@@ -296,6 +324,7 @@ function updateTotal(valor = 0, tipo) {
     const table = document.getElementById('selected-table');
     const tableTotal = document.getElementById('selected-table-total');
     let total = 0;
+    let comentarios = document.getElementById("input-comentarios");
     
     for (let i = 1; i < table.rows.length - 1; i++) {
         const row = table.rows[i];
@@ -307,6 +336,9 @@ function updateTotal(valor = 0, tipo) {
     if (tipo == "descuento"){
         if (valor > 0) {
             console.log("descuento aplicado")
+
+            comentarios.value = comentarios.value + " (Descuento aplicado del " + valor + "%)"
+
             total *= (1 - valor/100); // apply discount
         }
     }
@@ -314,6 +346,9 @@ function updateTotal(valor = 0, tipo) {
     if (tipo == "recargo"){
         if (valor > 0) {
             console.log("recargo aplicado")
+
+            comentarios.value = comentarios.value + " (Recargo aplicado del " + valor + "%)"
+
             total *= (1 + valor/100); // apply surcharge
         }
     }
