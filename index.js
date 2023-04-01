@@ -121,7 +121,7 @@ excelInput.addEventListener('change', async function(){
 
 function searcher() {
     // Declare variables
-    var input, filter, table, tr, td, i, txtValue;
+    var input, filter, table, tr, td, td2, i, txtValue, txtValue2;
     input = document.getElementById("excel-searcher");
     filter = input.value.toUpperCase();
     table = document.getElementById("excel-table");
@@ -130,16 +130,18 @@ function searcher() {
     // Loop through all table rows starting from index 1, and hide those who don't match the search query
     for (i = 1; i < tr.length; i++) {
       td = tr[i].getElementsByTagName("td")[0];
+      td2 = tr[i].getElementsByTagName("td")[3]; // Get the second td in each row
       if (td) {
         txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        txtValue2 = td2.textContent || td2.innerText; // Get the text content of the second td
+        if (txtValue.toUpperCase().indexOf(filter) > -1 || txtValue2.toUpperCase().indexOf(filter) > -1) {
           tr[i].style.display = "";
         } else {
           tr[i].style.display = "none";
         }
       }
     }
-}
+  }
 
 
 
