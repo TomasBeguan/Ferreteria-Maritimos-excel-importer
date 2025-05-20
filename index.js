@@ -253,7 +253,7 @@ function add_button(indice){
             rowExists = true;
             quantityCell = row.cells[2];
             subtotal = productPrice * parseInt(quantityCell.textContent);
-            row.cells[3].textContent = subtotal.toFixed(2);
+            row.cells[3].textContent = Math.round(subtotal).toLocaleString("es-AR");
             break;
         }
     }
@@ -262,7 +262,7 @@ function add_button(indice){
         const currentQuantity = parseInt(quantityCell.textContent);
         quantityCell.textContent = currentQuantity + 1;
         subtotal = productPrice * (currentQuantity + 1);
-        table.rows[table.rows.length - 2].cells[3].textContent = subtotal.toFixed(2);
+        table.rows[table.rows.length - 2].cells[3].textContent = Math.round(subtotal).toLocaleString("es-AR");
     } else {
         const newRow = table.insertRow(table.rows.length - 1);
         
@@ -280,7 +280,7 @@ function add_button(indice){
 
         const subtotalCell = newRow.insertCell();
         subtotalCell.classList.add("table-total-precio", "subtotal-cell");
-        subtotalCell.textContent = subtotal.toFixed(2);
+        subtotalCell.textContent = Math.round(subtotal).toLocaleString("es-AR");
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "-";
@@ -292,7 +292,7 @@ function add_button(indice){
             if (currentQuantity > 1) {
                 quantityCell.textContent = currentQuantity - 1;
                 subtotal = productPrice * parseInt(quantityCell.textContent);
-                subtotalCell.textContent = subtotal.toFixed(2);
+                subtotalCell.textContent = Math.round(subtotal).toLocaleString("es-AR");
             } else {
                 table.deleteRow(newRow.rowIndex);
             }
@@ -365,7 +365,8 @@ function updateTotal(valor = 0, tipo) {
     }
     
     totalRow = tableTotal.rows[tableTotal.rows.length - 1]; // Update the reference to the last row
-    totalRow.cells[1].textContent = total.toFixed(2);
+    totalRow.cells[1].textContent = Math.round(total).toLocaleString("es-AR");
+    //totalRow.cells[1].textContent = total.toFixed(2);
 
     //console.log(table)
     //console.log(tableTotal)
